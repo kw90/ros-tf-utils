@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 """
-Publish human pose TFs by converting PoseStamped messages.
-You can run this node with rqt_ez_publisher to get a quick-and-dirty GUI to
-add and move a virtual human pose.
-You can pass in starting positions (length-three tuples) if desired:
-    human_pose_publisher.py --initial_hand_pose 0 1 1
-                --initial_shoulder_pose 1 0 2
-Author: Felix Duvallet <felix.duvallet@epfl.ch>
+Publish pose TFs by converting PoseStamped messages.
+
+Author: Kai Waelti <kai.waelti@hslu.ch>
+with base from Felix Duvallet <felix.duvallet@epfl.ch>
+
 """
 import argparse
 import sys
@@ -19,7 +17,7 @@ from geometry_msgs.msg import Pose
 from geometry_msgs.msg import TransformStamped
 
 
-class PoseToTFRebroadcaster(object):
+class PoseStampedToTFRebroadcaster(object):
     """
     Simple node that listens to PoseStamped messages and rebroadcasts
     corresponding TF frames.
@@ -45,6 +43,7 @@ class PoseToTFRebroadcaster(object):
         """
         Starts one subscriber per pose topic, and stores the frame name & parent
         associated with each.
+
         :return: dict(frame_name -> dict('pose'->pose, 'parent_frame'->frame))
         """
         pose_data = {}
@@ -86,6 +85,7 @@ class PoseToTFRebroadcaster(object):
     def pose_to_tf(cls, pose, frame_name, parent_frame, time=None):
         """
         Generate a TF from a given pose, frame, and parent.
+
         """
         assert pose is not None, "Cannot have None for pose."
         tf = TransformStamped()
@@ -121,6 +121,7 @@ class PoseToTFRebroadcaster(object):
         """
         Parse a list of positions (that could be None or empty) into a
         PoseStamped ROS message.
+
         :return A PoseStamped with the identity orientation, or None if the
         input is None or if the list length is not 3.
         """
@@ -169,7 +170,7 @@ def run(argv):
     config = load_config(args.config_file)
     rospy.loginfo("Have configuration: {}".format(config))
 
-    transform_rebroadcaster = PoseToTFRebroadcaster(config)
+    transform_rebroadcaster = PoseStampedToTFRebroadcaster(config)
     rospy.loginfo("Pose to TF rebroadcaster is now running...")
 
     transform_rebroadcaster.spin()
