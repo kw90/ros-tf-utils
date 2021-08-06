@@ -1,17 +1,11 @@
 # Define the publishing rate, must be positive.
-publish_rate: 5
+publish_rate: 25
 
 # Define the frames we care about. Each frame is associated with a pose topic
 # (mandatory), and optionally a parent frame (default=world) and
 # initial_position (default=None).
 frames:
-    human/root:
-        pose_topic: human/root_pose
-        parent_frame: world
+    dope/pose_soup:
+        pose_topic: dope/pose_soup
+        parent_frame: camera_color_optical_frame
         initial_position: 0.0 0.0 0.0
-    human/hand:
-        pose_topic: human/hand_pose
-        parent_frame: human/root
-    human/shoulder:
-        pose_topic: human/shoulder_pose
-        parent_frame: human/root
