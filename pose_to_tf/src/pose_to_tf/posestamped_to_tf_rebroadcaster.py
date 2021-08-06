@@ -13,7 +13,7 @@ import yaml
 
 import rospy
 import tf2_ros as tf2
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import TransformStamped
 
 
@@ -63,7 +63,7 @@ class PoseStampedToTFRebroadcaster(object):
 
             # Create a new subscriber callback that receives the frame name when
             # it gets called. That subscriber will store the latest pose.
-            _ = rospy.Subscriber(topic, Pose, self._pose_callback, frame_name)
+            _ = rospy.Subscriber(topic, PoseStamped, self._pose_callback, frame_name)
             pose_data[frame_name] = {
                 "parent_frame": parent_frame,
                 "pose": initial_pose,
@@ -95,8 +95,8 @@ class PoseStampedToTFRebroadcaster(object):
         tf.header.stamp = time
         tf.header.frame_id = parent_frame
 
-        tf.transform.translation = pose.position
-        tf.transform.rotation = pose.orientation
+        tf.transform.translation = pose.pose.position
+        tf.transform.rotation = pose.pose.orientation
 
         return tf
 
@@ -127,11 +127,11 @@ class PoseStampedToTFRebroadcaster(object):
         """
         initial_pose = None
         if position and len(position) == 3:
-            initial_pose = Pose()
-            initial_pose.position.x = position[0]
-            initial_pose.position.y = position[1]
-            initial_pose.position.z = position[2]
-            initial_pose.orientation.w = 1.0  # init quaternion properly.
+            initial_pose = PoseStamped()
+            initial_pose.pose.position.x = position[0]
+            initial_pose.pose.position.y = position[1]
+            initial_pose.pose.position.z = position[2]
+            initial_pose.pose.orientation.w = 1.0  # init quaternion properly.
 
         return initial_pose
 
